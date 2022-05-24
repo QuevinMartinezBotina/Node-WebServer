@@ -1,30 +1,38 @@
 const express = require("express");
-const app = express();
-const port = 8080;
+const { render } = require("express/lib/response");
+const hbs = require("hbs");
 const path = require("path");
+require('dotenv').config();
+
+const app = express();
+const port = process.env.PORT || 8080;
+
+//Hnadlerbars
+app.set("view engine", "hbs");
+
+hbs.registerPartials(__dirname + "/views/partials", function (err) {
+  console.log(err);
+});
 
 //Servir content static
-app.use(express.static("public"));
+app.use(express.static("public/landingpage"));
 
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public/"));
+  res.render("home", { nombre: "Santiago Martinez", titulo: "Curso de node" });
 });
 
-app.get("/helloworld", (req, res) => {
-  res.send("Hello world in route");
+app.get("/generic", (req, res) => {
+  res.render("generic", {
+    nombre: "Santiago Martinez",
+    titulo: "Curso de node",
+  });
 });
 
-/* Serving the landing page. */
-app.get("/landingpage", (req, res) => {
-  res.sendFile(path.join(__dirname, "public/landingpage/home.html"));
-});
-
-app.get("/landingpage/generic", (req, res) => {
-  res.sendFile(path.join(__dirname, "public/landingpage/generic.html"));
-});
-
-app.get("/landingpage/elements", (req, res) => {
-  res.sendFile(path.join(__dirname, "public/landingpage/elements.html"));
+app.get("/elements", (req, res) => {
+  res.render("elements", {
+    nombre: "Santiago Martinez",
+    titulo: "Curso de node",
+  });
 });
 
 app.get("*", (rep, res) => {
